@@ -15,7 +15,7 @@
     </head>
     <body>
         {% if is_granted("IS_AUTHENTICATED_FULLY") %}
-            <h4>Hello, {{ app.user.username }}</h4>
+            <h4>Hello, {{ app.user.username }} | Group: {{ app.user.group.name ?? 'n/a' }}</h4>
             <div style="text-align: right; padding: 15px;"><a href="{{ path('app_logout') }}">Sign Out</a></li></div>
         {% endif %}
         {% block body %}{% endblock %}
