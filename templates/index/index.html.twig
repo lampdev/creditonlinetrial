@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Index{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+
+<div class="example-wrapper">
+    <h1>Here is Trial Application Index Page</h1>
+
+    <ul>
+        <li>To start - <a href="{{ path('app_register') }}">Register here</a></li>
+        <li>Already have an account - <a href="{{ path('login') }}">Sing In</a></li>
+    </ul>
+</div>
+{% endblock %}
