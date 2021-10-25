@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Interface\HasAccessRights;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\GroupRepository;
 use Doctrine\Common\Collections\Collection;
@@ -11,7 +12,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * @ORM\Entity(repositoryClass=GroupRepository::class)
  * @ORM\Table(name="`group`")
  */
-class Group
+class Group implements HasAccessRights
 {
     /**
      * @ORM\Id
