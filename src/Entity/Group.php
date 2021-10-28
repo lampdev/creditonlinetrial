@@ -2,9 +2,9 @@
 
 namespace App\Entity;
 
-use App\Entity\Interface\HasAccessRights;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\GroupRepository;
+use App\Entity\Interface\HasAccessRights;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 
@@ -59,5 +59,10 @@ class Group implements HasAccessRights
     public function getUsers(): Collection
     {
         return $this->users;
+    }
+
+    public function getAccessRightOwnerName(): string
+    {
+        return 'Group: ' . $this->name;
     }
 }

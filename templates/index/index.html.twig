@@ -11,9 +11,18 @@
 <div class="example-wrapper">
     <h1>Here is Trial Application Index Page</h1>
 
-    <ul>
-        <li>To start - <a href="{{ path('app_register') }}">Register here</a></li>
-        <li>Already have an account - <a href="{{ path('login') }}">Sing In</a></li>
-    </ul>
+    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+        <ul>
+            <li><a href="{{ path('group_index') }}">Manage groups</a></li>
+            <li><a href="{{ path('access_right_index') }}">Manage access rights</a></li>
+            <li><a href="{{ path('app_logout') }}">Sign Out</a></li>
+        </ul>
+    {% else %}
+        <ul>
+            <li>Before the start - <a href="{{ path('group_new') }}">Create group</a></li>
+            <li>Then - <a href="{{ path('app_register') }}">Register here</a></li>
+            <li>Already have an account - <a href="{{ path('login') }}">Sing In</a></li>
+        </ul>
+    {% endif %}
 </div>
 {% endblock %}

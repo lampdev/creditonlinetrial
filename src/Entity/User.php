@@ -2,18 +2,23 @@
 
 namespace App\Entity;
 
-use App\Entity\Interface\HasAccessRights;
-use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\UserRepository;
+use App\Entity\Interface\HasAccessRights;
+
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @UniqueEntity(fields={"username"}, message="There is already an account with this username")
  */
-class User implements UserInterface, PasswordAuthenticatedUserInterface, HasAccessRights
+class User implements
+    UserInterface,
+    PasswordAuthenticatedUserInterface,
+    HasAccessRights
 {
     /**
      * @ORM\Id
@@ -39,8 +44,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, HasAcce
     private $password;
 
     /**
+     * @ORM\ManyToOne(
+     *  targetEntity="App\Entity\Group",
+     *  inversedBy="users"
+     * )
      * @Assert\NotNull
-     * @ORM\OneToOne(targetEntity="App\Entity\Group", inversedBy="users")
      */
     private $group;
 
@@ -59,6 +67,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, HasAcce
         $this->username = $username;
 
         return $this;
+    }
+
+    public function getName(): string
+    {
+        return (string) $this->username;
     }
 
     public function getUserIdentifier(): string
@@ -107,6 +120,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, HasAcce
         $this->group = $group;
 
         return $this;
+    }
+
+    public function getAccessRightOwnerName(): string
+    {
+        return 'User: ' . $this->username;
     }
 
     /**

@@ -3,6 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\AccessRight;
+use App\Entity\Interface\HasAccessRights;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -19,32 +21,55 @@ class AccessRightRepository extends ServiceEntityRepository
         parent::__construct($registry, AccessRight::class);
     }
 
-    // /**
-    //  * @return AccessRight[] Returns an array of AccessRight objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('a')
-            ->andWhere('a.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('a.id', 'ASC')
-            ->setMaxResults(10)
+    public function getRightsByOwner(
+        string $ownerType,
+        int $ownerId
+    ): ?array {
+        return $this->createQueryBuilder('ar')
+            ->andWhere('ar.owner_type = :owner_type')
+            ->andWhere('ar.owner_id = :owner_id')
+            ->setParameters([
+                'owner_type' => $ownerType,
+                'owner_id' => $ownerId
+            ])
             ->getQuery()
             ->getResult()
         ;
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?AccessRight
-    {
-        return $this->createQueryBuilder('a')
-            ->andWhere('a.exampleField = :val')
-            ->setParameter('val', $value)
+    public function hasUserAccess(
+        array $ownerParams,
+        string $module,
+        string $function
+    ): bool {
+        return $this->createQueryBuilder('ar')
+            ->where(
+                '(' .
+                    '(' .
+                        'ar.owner_type = :user_type AND ' .
+                        'ar.owner_id = :user_id ' .
+                    ') OR ' .
+                    '(' .
+                        'ar.owner_type = :group_type AND ' .
+                        'ar.owner_id = :group_id ' .
+                    ')' .
+                ') AND ' .
+                'ar.module = :module AND ' .
+                '(' .
+                    'ar.function = :function OR ' .
+                    'ar.function = :wildcard' .
+                ')'
+            )
+            ->setParameters([
+                'user_type' => $ownerParams['user_type'],
+                'user_id' => $ownerParams['user_id'],
+                'group_type' => $ownerParams['group_type'],
+                'group_id' => $ownerParams['group_id'],
+                'module' => $module,
+                'function' => $function,
+                'wildcard' => AccessRight::FUNCTION_WILDCARD
+            ])
             ->getQuery()
-            ->getOneOrNullResult()
-        ;
+            ->getOneOrNullResult() !== null;
     }
-    */
 }

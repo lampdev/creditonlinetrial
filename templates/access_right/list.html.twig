@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}AccessRight index{% endblock %}
+
+{% block body %}
+    <h1>AccessRights for {{ owner.getAccessRightOwnerName() }}</h1>
+
+    <table class="table" border="1px">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Module</th>
+                <th>Function</th>
+                <th>&nbsp;</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for access_right in access_rights %}
+            <tr>
+                <td>{{ access_right.id }}</td>
+                <td>{{ access_right.module }}</td>
+                <td>{{ access_right.function }}</td>
+                <td>
+                    <form method="post" action="{{ path('access_right_delete', {'id': access_right.id}) }}" onsubmit="return confirm('Are you sure you want to delete this access right?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ access_right.id) }}">
+                        <button class="btn">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4" style="padding: 15px;">No Access Rights Found for {{ owner.getAccessRightOwnerName() }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('access_right_new') }}">Create new</a>
+{% endblock %}

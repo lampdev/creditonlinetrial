@@ -3,21 +3,37 @@
 namespace App\Form;
 
 use App\Entity\User;
+use App\Entity\Group;
+use App\Repository\GroupRepository;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 
 class RegistrationFormType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options): void
-    {
+    public function __construct(
+        public GroupRepository $groupRepository
+    ) { }
+
+    public function buildForm(FormBuilderInterface $builder, array $options): void {
         $builder
             ->add('username')
+            ->add('group', ChoiceType::class, [
+                'choices' => $this->groupRepository->findAll(),
+                'choice_value' => 'name',
+                'choice_label' => function(?Group $group) {
+                    return $group ? strtoupper($group->getName()) : '';
+                },
+                'choice_attr' => function(?Group $group) {
+                    return $group ? ['class' => 'group_'.strtolower($group->getName())] : [];
+                },
+            ])
             ->add('agreeTerms', CheckboxType::class, [
                 'mapped' => false,
                 'constraints' => [
