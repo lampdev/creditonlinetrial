@@ -39,6 +39,6 @@
     {{ form_end(form) }}
 
     {% if result %}
-        <h1>Result: {{ result }}.</h1>
+        <h1>Result: {{ result ? 'TRUE' : 'FALSE' }}.</h1>
     {% endif %}
 {% endblock %}

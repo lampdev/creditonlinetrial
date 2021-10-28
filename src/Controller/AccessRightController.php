@@ -44,22 +44,10 @@ class AccessRightController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $hasAccess = $accessRightService->checkUserHasAccess(
+            $result = $accessRightService->checkUserHasAccess(
                 $security->getUser(),
                 $form->getData()['module'],
                 $form->getData()['function']
-            );
-
-            echo '----------------------------------------';
-            // echo 'MacroDump@'.__FILE__.':'.(__LINE__+1).'<br><pre>'.PHP_EOL;
-            var_dump($hasAccess);
-            // die('</pre><br>MacroDump@'.__FILE__.':'.__LINE__.PHP_EOL);
-            echo '----------------------------------------';
-
-
-            $result = print_r(
-                $hasAccess,
-                true
             );
         }
 
