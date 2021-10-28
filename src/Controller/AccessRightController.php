@@ -3,18 +3,20 @@
 namespace App\Controller;
 
 use App\Entity\User;
-use App\Entity\AccessRight;
 use App\Entity\Group;
-use App\Entity\Interface\HasAccessRights;
+use App\Entity\AccessRight;
 use App\Form\AccessRightType;
-use App\Repository\AccessRightRepository;
-use App\Repository\GroupRepository;
+use App\Form\AccessRightCheckType;
 use App\Repository\UserRepository;
+use App\Repository\GroupRepository;
 use App\Service\AccessRightService;
+use App\Entity\Interface\HasAccessRights;
+use App\Repository\AccessRightRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Security\Core\Security;
 
 #[Route('/access/right')]
 class AccessRightController extends AbstractController
@@ -27,6 +29,43 @@ class AccessRightController extends AbstractController
         return $this->render('access_right/index.html.twig', [
             'users' => $userRepository->findAll(),
             'groups' => $groupRepository->findAll(),
+        ]);
+    }
+
+    #[Route('/check', name: 'access_right_check', methods: ['GET', 'POST'])]
+    public function check(
+        Request $request,
+        AccessRightService $accessRightService,
+        Security $security
+    ): Response {
+        $form = $this->createForm(AccessRightCheckType::class, [
+            'module' => $request->query->get('module')
+        ]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $hasAccess = $accessRightService->checkUserHasAccess(
+                $security->getUser(),
+                $form->getData()['module'],
+                $form->getData()['function']
+            );
+
+            echo '----------------------------------------';
+            // echo 'MacroDump@'.__FILE__.':'.(__LINE__+1).'<br><pre>'.PHP_EOL;
+            var_dump($hasAccess);
+            // die('</pre><br>MacroDump@'.__FILE__.':'.__LINE__.PHP_EOL);
+            echo '----------------------------------------';
+
+
+            $result = print_r(
+                $hasAccess,
+                true
+            );
+        }
+
+        return $this->renderForm('access_right/check.html.twig', [
+            'form' => $form,
+            'result' => isset($result) ? $result : null
         ]);
     }
 

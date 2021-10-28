@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Check You have Access to Module and Function{% endblock %}
+
+{% block javascripts %}
+<script
+    src="https://code.jquery.com/jquery-3.6.0.slim.min.js"
+    integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI="
+    crossorigin="anonymous"
+></script>
+<script>
+    $(document).ready(() => {
+        const changeQueryString = (param, value) => {
+            const newParams = new URLSearchParams(window.location.search);
+            newParams.set(param, value);
+
+            window.location.replace(
+                window.location.pathname + '?' + newParams.toString()
+            );
+        }
+
+        $("#access_right_check_module").on('change', (e) => {
+            if (e.target.value === '') {
+                return window.location.replace(window.location.pathname);
+            }
+
+            return changeQueryString('module', e.target.value);
+        })
+    })
+</script>
+{% endblock %}
+
+{% block body %}
+    <h1>Check you have permissions to:</h1>
+
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button class="btn">{{ button_label|default('Check') }}</button>
+    {{ form_end(form) }}
+
+    {% if result %}
+        <h1>Result: {{ result }}.</h1>
+    {% endif %}
+{% endblock %}
