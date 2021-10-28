@@ -12,7 +12,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @UniqueEntity(
  *     fields={"owner_type", "owner_id", "module", "function"},
  *     errorPath="port",
- *     message="This port is already in use on that host."
+ *     message="This access permission is already set to this entity."
  * )
  * @ORM\Table(name="access_rights",indexes={
  *     @ORM\Index(name="owner_idx", columns={"owner_type", "owner_id"})
