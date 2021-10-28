@@ -42,34 +42,36 @@ class AccessRightRepository extends ServiceEntityRepository
         string $module,
         string $function
     ): bool {
-        return $this->createQueryBuilder('ar')
-            ->where(
+        $record = $this->createQueryBuilder('ar')
+        ->where(
+            '(' .
                 '(' .
-                    '(' .
-                        'ar.owner_type = :user_type AND ' .
-                        'ar.owner_id = :user_id ' .
-                    ') OR ' .
-                    '(' .
-                        'ar.owner_type = :group_type AND ' .
-                        'ar.owner_id = :group_id ' .
-                    ')' .
-                ') AND ' .
-                'ar.module = :module AND ' .
+                    'ar.owner_type = :user_type AND ' .
+                    'ar.owner_id = :user_id ' .
+                ') OR ' .
                 '(' .
-                    'ar.function = :function OR ' .
-                    'ar.function = :wildcard' .
-                ')'
-            )
-            ->setParameters([
-                'user_type' => $ownerParams['user_type'],
-                'user_id' => $ownerParams['user_id'],
-                'group_type' => $ownerParams['group_type'],
-                'group_id' => $ownerParams['group_id'],
-                'module' => $module,
-                'function' => $function,
-                'wildcard' => AccessRight::FUNCTION_WILDCARD
-            ])
-            ->getQuery()
-            ->getOneOrNullResult() !== null;
+                    'ar.owner_type = :group_type AND ' .
+                    'ar.owner_id = :group_id ' .
+                ')' .
+            ') AND ' .
+            'ar.module = :module AND ' .
+            '(' .
+                'ar.function = :function OR ' .
+                'ar.function = :wildcard' .
+            ')'
+        )
+        ->setParameters([
+            'user_type' => $ownerParams['user_type'],
+            'user_id' => $ownerParams['user_id'],
+            'group_type' => $ownerParams['group_type'],
+            'group_id' => $ownerParams['group_id'],
+            'module' => $module,
+            'function' => $function,
+            'wildcard' => AccessRight::FUNCTION_WILDCARD
+        ])
+        ->getQuery()
+        ->getOneOrNullResult();
+
+        return $record !== null;
     }
 }

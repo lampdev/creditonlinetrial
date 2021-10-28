@@ -38,7 +38,7 @@
         <button class="btn">{{ button_label|default('Check') }}</button>
     {{ form_end(form) }}
 
-    {% if result %}
+    {% if form.vars.submitted %}
         <h1>Result: {{ result ? 'TRUE' : 'FALSE' }}.</h1>
     {% endif %}
 {% endblock %}

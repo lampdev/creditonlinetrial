@@ -26,7 +26,7 @@ class AccessRightService
         string $module,
         string $function
     ): bool {
-        return null !== $this->accessRightRepository->hasUserAccess(
+        return $this->accessRightRepository->hasUserAccess(
             [
                 'user_type' => $this->getAuthorizedEntityName($user),
                 'user_id' => $user->getId(),
